@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  backend:
+    build: 
+      context: ./multi-02-finished/backend
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    volumes:
+      - logs:/app/logs         # Volume
+      - ./multi-02-finished/backend/src:/app/src # Bind mount
+    env_file: # sử dụng file .env
+      - ./.env
+    depends_on: #phụ thuộc vào service mongodb khi có cái này nó sẽ tạo service mongodb trước
+      - mongodb
+    
+  frontend:
+    build: ./multi-02-finished/frontend
+    ports:
+      - '3000:3000' # Ví dụ: nếu frontend chạy ở cổng 3000
+    volumes:
+      - ./multi-02-finished/frontend/src:/app/src # Bind mount
+    stdin_open: true #cho phép nhập
+    tty: true
+    depends_on:
+      - backend
+
+  mongodb:
+    image: 'mongo' 
+    # environment:
+			#  MONGO_INITDB_ROOT_USERNAME: max 
+      #  MONGO_INITDB_ROOT_PASSWORD: secret
+			# khi có key: value thì không cần thêm -
+      # nếu chỉ có một từ đơn thì dùng -
+
+
+    volumes:
+      - data:/app/db
+    env_file:
+      - ./.env
+
+
+
+#nếu trong services có sử dụng volume thì list ở đây
+volumes:
+  data: #chỉ cần đặt các tên volume và dấu : ở đây thôi, ví dụ ở đây tên volume là data là volume của mongodb
+  logs: 
