@@ -1,0 +1,17 @@
+services:
+  mynpm:
+    build: ./
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/app #bind mount
+
+    #khi sử dụng docker-compose up giống như vậy thì sẽ bị lỗi
+    #vì trong Dockerfile ta có ENTRYPOINT [ "npm" ] tức là nó chỉ chạy lệnh npm thôi => lỗi
+    #vì vậy ta phải nối lệnh cho nó biết là init, install,....
+    #ta sử dụng docker-compose run service_name để chạy specific service trong trường hợp có nhiều services  
+    #docker-compose run mynpm init ->chạy service mynpm và nối init vào ENTRYPOINT \
+    #thực chất docker docker-compose run giống docker run nếu ta để ý thì mọi command phía sao run đề giống nhau
+    #chỉ khác là docker-compose run sẽ đọc các config trong file docker-compose.yml
+    #VD: docker-compose run --rm tên_service(nó giống docker run --rm tên_image,nhưng vì docker-compose đã config rồi tên ta thay thế bằng tên service)
+    
